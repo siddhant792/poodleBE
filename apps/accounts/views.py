@@ -22,7 +22,7 @@ class LoginUserView(rest_framwork_generics.CreateAPIView):
     def post(self, request):
         login_serializer = self.serializer_class(data=request.data)
         login_serializer.is_valid(raise_exception=True)
-        token = AuthToken.objects.create(user = login_serializer.validated_data['user']).key
+        token = AuthToken.objects.get_or_create(user = login_serializer.validated_data['user']).key
         return Response({'token': token})
 
 
