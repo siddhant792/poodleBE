@@ -1,5 +1,6 @@
 from rest_framework import serializers as rest_framework_serializers
 from rest_framework.authtoken.models import Token as AuthToken
+from rest_framework import exceptions
 
 from django.contrib.auth import authenticate
 
@@ -51,5 +52,7 @@ class LoginSerializer(rest_framework_serializers.Serializer):
         email = attrs.get('email')
         password = attrs.get('password')
         user = authenticate(email=email, password=password)
+        if not user:
+            raise exceptions.ValidationError('Unable to log in with provided credentials.')
         attrs['user'] = user
         return attrs
