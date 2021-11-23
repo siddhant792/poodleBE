@@ -23,7 +23,13 @@ class LoginUserView(rest_framwork_generics.CreateAPIView):
         login_serializer = self.serializer_class(data=request.data)
         login_serializer.is_valid(raise_exception=True)
         token = AuthToken.objects.get(user = login_serializer.validated_data['user']).key
-        return Response({'token': token})
+        return Response(
+            {
+                'token': token,
+                'first_name': login_serializer.validated_data['user'].first_name,
+                'last_name': login_serializer.validated_data['user'].last_name,
+            }
+        )
 
 
 class LogoutUserView(rest_framwork_generics.DestroyAPIView):
