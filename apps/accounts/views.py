@@ -22,7 +22,8 @@ class LoginUserView(rest_framwork_generics.CreateAPIView):
     def post(self, request):
         login_serializer = self.serializer_class(data=request.data)
         login_serializer.is_valid(raise_exception=True)
-        token = AuthToken.objects.get(user = login_serializer.validated_data['user']).key
+        token = AuthToken.objects.get_or_create(user = login_serializer.validated_data['user'])[0].key
+        print(token)
         return Response(
             {
                 'token': token,
@@ -39,8 +40,7 @@ class LogoutUserView(rest_framwork_generics.DestroyAPIView):
     query_set = AuthToken.objects.all()
 
     def destroy(self, request, *args, **kwargs):
-        token_key = request.headers.get("Authorization")
-        token = self.query_set.filter(key=token_key)
+        token = self.query_set.filter(user=request.user)
         if token:
             token.delete()
             return Response({'message': "Logout Successful"}, status=HTTP_200_OK)
