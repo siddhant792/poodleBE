@@ -18,7 +18,7 @@ class DocumentSerializer(rest_framework_serializers.ModelSerializer):
 
     class Meta:
         model = document_models.Document
-        fields = ("name", "subject", "course", "semester", "university", "author", "path", "file")
+        fields = ("name", "subject", "course", "semester", "university", "file")
 
     def validate_file(self, file):
         if file.size/1000000 > 50:
@@ -26,18 +26,18 @@ class DocumentSerializer(rest_framework_serializers.ModelSerializer):
         return file
 
     def create(self, validated_data):
-        document = {
-            'name': validated_data['name'],
-            'subject': validated_data['subject'],
-            'course': validated_data['course'],
-            'semester': validated_data['semester'],
-            'university': validated_data['university'],
-            'author': validated_data['author'],
-            'path': validated_data['path']
-        }
-        user = self.context.get('request').user
+        user=self.context['request'].user
         try:
-            document_utils.upload_document(user, validated_data['name'], validated_data['file'])
+            cloud_path = document_utils.upload_document(user, validated_data['name'], validated_data['file'])
+            document = {
+                'name': validated_data['name'],
+                'subject': validated_data['subject'],
+                'course': validated_data['course'],
+                'semester': validated_data['semester'],
+                'university': validated_data['university'],
+                'author': user,
+                'path': cloud_path
+            }
         except:
             raise rest_framework_validators.ValidationError(document_constants.UPLOAD_ERROR_MSG)
         return super().create(document)

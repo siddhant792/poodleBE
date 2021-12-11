@@ -17,5 +17,5 @@ def current_milli_time():
 def upload_document(user, title, file):
     file_extension = os.path.splitext(str(file))[1]
     path_on_cloud = document_constants.UPLOAD_PATH + str(user) + "/" + title + "-" + current_milli_time() + file_extension
-    print(path_on_cloud)
-    storage.child(path_on_cloud).put(file)
+    bucket_token = storage.child(path_on_cloud).put(file)['downloadTokens']
+    return storage.child(path_on_cloud).get_url(bucket_token)
