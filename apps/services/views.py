@@ -21,3 +21,4 @@ class QueryView(rest_framwork_generics.CreateAPIView):
     Fetch Holders View
     """
     serializer_class = services_serializers.QuerySerializer
+    permission_classes = [AllowAny]
