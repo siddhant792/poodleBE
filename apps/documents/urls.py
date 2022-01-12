@@ -8,4 +8,8 @@ router = SimpleRouter(trailing_slash=False)
 
 router.register('upload',document_views.DocumentView, basename="upload")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('fetch', document_views.FetchDocumentView.as_view(), name='fetch'),
+]
+
+urlpatterns += router.urls
