@@ -13,7 +13,7 @@ class HoldersView(rest_framwork_generics.ListAPIView):
     """
     permission_classes = [AllowAny]
     serializer_class = services_serializers.HolderSerializer
-    queryset = services_models.Holders.objects.all()
+    queryset = services_models.Holder.objects.all()
 
 
 class QueryView(rest_framwork_generics.CreateAPIView):

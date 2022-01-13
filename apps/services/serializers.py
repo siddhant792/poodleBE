@@ -1,4 +1,3 @@
-from django.db.models import fields
 from rest_framework import serializers as rest_framework_serializers
 
 from apps.services import models as services_models
@@ -9,7 +8,7 @@ class HolderSerializer(rest_framework_serializers.ModelSerializer):
     Get all holders from db
     """
     class Meta:
-        model = services_models.Holders
+        model = services_models.Holder
         fields = '__all__'
 
 
