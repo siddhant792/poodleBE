@@ -7,13 +7,13 @@ from apps.services import (
 )
 
 
-class HoldersView(rest_framwork_generics.ListAPIView):
+class SubjectView(rest_framwork_generics.ListAPIView):
     """
     Fetch Holders View
     """
     permission_classes = [AllowAny]
-    serializer_class = services_serializers.HolderSerializer
-    queryset = services_models.Holder.objects.all()
+    serializer_class = services_serializers.SubjectSerializer
+    queryset = services_models.Subject.objects.all()
 
 
 class QueryView(rest_framwork_generics.CreateAPIView):

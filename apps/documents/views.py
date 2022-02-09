@@ -24,15 +24,26 @@ class FetchDocumentView(rest_framwork_generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     
     def retrieve(self, request, *args, **kwargs):
-        subject =  service_models.Holder.objects.filter(code=request.data.get('subject_code'), type='SUBJECT').first()
+        subject =  service_models.Subject.objects.filter(slug=request.GET.get('subject_slug')).first()
         if not subject:
-            return Response({'subject_code': "Not a valid subject"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'subject_slug': "Not a valid subject"}, status=status.HTTP_404_NOT_FOUND)
         all_docs = document_models.Document.objects.annotate(
             full_name=Concat('author__first_name', Value(' '), 'author__last_name')
         ).filter(subject=subject).values(
-            'subject', 'course', 'semester', 'university', document_name=F('name'), document_url = F('path'), author_name=F('full_name')
+            subject_name=F('subject__name'), course_name=F('subject__stream__course__name'), 
+            semester_name=F('subject__semester__number'), university_name=F('subject__stream__course__university__name'), 
+            document_name=F('name'), document_url = F('path'), author_name=F('full_name'),
         )
-        return Response({
-            "subject_name": subject.name,
-            "documents": all_docs
-        })
+        return Response({"documents": all_docs})
+
+
+class FetchUserDocumentView(rest_framwork_generics.RetrieveAPIView):
+    def retrieve(self, request, *args, **kwargs):
+        all_docs = document_models.Document.objects.annotate(
+            full_name=Concat('author__first_name', Value(' '), 'author__last_name')
+        ).filter(author=request.user).values(
+            subject_name=F('subject__name'), course_name=F('subject__stream__course__name'), 
+            semester_name=F('subject__semester__number'), university_name=F('subject__stream__course__university__name'), 
+            document_name=F('name'), document_url = F('path'), author_name=F('full_name'),
+        )
+        return Response({"documents": all_docs})

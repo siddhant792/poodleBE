@@ -9,7 +9,8 @@ router = SimpleRouter(trailing_slash=False)
 router.register('upload',document_views.DocumentView, basename="upload")
 
 urlpatterns = [
-    path('fetch', document_views.FetchDocumentView.as_view(), name='fetch'),
+    path('fetch/', document_views.FetchDocumentView.as_view(), name='fetch'),
+    path('fetch/user-uploads', document_views.FetchUserDocumentView.as_view(), name='fetch'),
 ]
 
 urlpatterns += router.urls
